@@ -12,14 +12,18 @@ st.set_page_config(page_title="EGS DATA CENTER", layout="wide")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ----------------------------------------
-# BACKGROUND IMAGE
+# BACKGROUND IMAGE WITH DARK OVERLAY
 # ----------------------------------------
 def add_bg_from_url(image_url):
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: url("{image_url}");
+            background: linear-gradient(
+                rgba(0, 0, 0, 0.6),
+                rgba(0, 0, 0, 0.6)
+            ),
+            url("{image_url}");
             background-size: cover;
             background-position: center;
         }}
@@ -78,10 +82,10 @@ if st.button("🔄 Get Data"):
     # IMPRESSIVE ANIMATED TREND CHART
     st.subheader("📈 Sensor Data Trend (Demo)")
 
-    # Example trend data
+    # Example trend data for demonstration
     x = np.arange(10)
-    y_temp = np.linspace(temperature - 2, temperature, 10)
-    y_hum = np.linspace(humidity - 2, humidity, 10)
+    y_temp = np.linspace(float(temperature) - 2, float(temperature), 10)
+    y_hum = np.linspace(float(humidity) - 2, float(humidity), 10)
 
     fig = go.Figure()
 
@@ -106,10 +110,10 @@ if st.button("🔄 Get Data"):
         xaxis=dict(title='Time'),
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white')
     )
 
-    # Smooth animation
-    fig.update_traces(line=dict(shape='spline'))
+    fig.update_traces(line=dict(shape='spline'))  # Smooth curve
 
     st.plotly_chart(fig, use_container_width=True)
 
