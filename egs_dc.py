@@ -101,7 +101,7 @@ except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS: show latest record (MOBILE FRIENDLY, BOLD, BLACK, NO TIMESTAMP)
+# SYSTEM STATUS: ✅ LIVE BLACK & BOLD, NO TIMESTAMP
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
 if len(df) > 0:
@@ -124,7 +124,15 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.subheader("✅ LIVE")
+st.markdown(
+    """
+    <h2 style='color: #000000; font-weight: bold;'>
+        ✅ LIVE
+    </h2>
+    """,
+    unsafe_allow_html=True
+)
+
 st.markdown(
     f"""
     <p style='font-size: 20px; color: #000000;'>
@@ -165,7 +173,7 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CLEAN TREND CHARTS — MATCH STYLE YOU SHARED
+# CLEAN TREND CHARTS — MATCH YOUR STYLE
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
