@@ -16,12 +16,13 @@ REFRESH_INTERVAL = 30  # seconds
 # ----------------------------------------
 def add_bg_from_local(image_file):
     with open(image_file, "rb") as image:
-        encoded = image.read()
+        import base64
+    encoded = base64.b64encode(image.read()).decode()
     st.markdown(
          f"""
          <style>
          .stApp {{
-             background-image: url("data:image/jpg;base64,{encoded.hex()}");
+             background-image: url("data:image/jpg;base64,{encoded}");
              background-size: cover;
          }}
          </style>
