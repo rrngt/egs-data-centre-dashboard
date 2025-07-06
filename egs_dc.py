@@ -51,7 +51,7 @@ st.markdown(
 # ----------------------------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    button_clicked = st.button("🔄 Get Data")
+    button_clicked = st.button("Get Data")
 
 # ----------------------------------------
 # IF BUTTON CLICKED → FETCH DATA & SHOW STATUS + CHARTS
@@ -95,15 +95,43 @@ if button_clicked:
         unsafe_allow_html=True
     )
 
-    st.subheader("✅ LIVE ")
+    st.subheader("✅ LIVE")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
     st.write(f"Last updated: {now}")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # READ LOGGED DATA
+    # ----------------------------------------
+    # SHOW TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
+    # ----------------------------------------
     df = pd.read_csv(DATA_FILE)
+    total_records = len(df)
+
+    st.markdown(
+        f"""
+        <div style='background: rgba(0, 0, 0, 0.05);
+                    color: #333333;
+                    padding: 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;'>
+            <h4>Total Records Inserted: {total_records}</h4>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    csv = df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="📥 Download CSV",
+        data=csv,
+        file_name='data.csv',
+        mime='text/csv'
+    )
+
+    # ----------------------------------------
+    # READ LOGGED DATA FOR CHARTS
+    # ----------------------------------------
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
     df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
@@ -153,3 +181,4 @@ if button_clicked:
         )
         fig_hum.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_hum, use_container_width=True)
+
