@@ -35,28 +35,28 @@ st.markdown(
 )
 
 # ----------------------------------------
-# TITLE + BUTTON STACKED IN FORM
+# BIG, BOLD, CENTERED TITLE
 # ----------------------------------------
-with st.form(key="get_data_form"):
-    st.markdown(
-        """
-        <div style='text-align: center;'>
-            <h1 style='color: #333333; font-size: 60px;'>
-                EGS DATA CENTER
-            </h1>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    submitted = st.form_submit_button(
-        "🔄 Get Data",
-        help="Fetch the latest sensor data"
-    )
+st.markdown(
+    """
+    <h1 style='text-align: center; color: #333333; font-size: 72px; font-weight: bold;'>
+        EGS DATA CENTER
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
+
+# ----------------------------------------
+# CENTERED BUTTON DIRECTLY BELOW TITLE
+# ----------------------------------------
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    button_clicked = st.button("🔄 Get Data")
 
 # ----------------------------------------
 # IF BUTTON CLICKED → FETCH DATA & SHOW STATUS + CHARTS
 # ----------------------------------------
-if submitted:
+if button_clicked:
     API_URL = "https://iot.egspgroup.in:81/api/dht"
 
     try:
@@ -95,7 +95,7 @@ if submitted:
         unsafe_allow_html=True
     )
 
-    st.subheader("✅Live Data")
+    st.subheader("✅ LIVE ")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
     st.write(f"Last updated: {now}")
