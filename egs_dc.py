@@ -31,30 +31,12 @@ IMAGE_URL = "https://raw.githubusercontent.com/rrngt/egs-data-centre-dashboard/m
 add_bg_from_url(IMAGE_URL)
 
 # ----------------------------------------
-# TITLE WITH OVERLAY
-# ----------------------------------------
-st.markdown(
-    """
-    <div style='background: rgba(0, 0, 0, 0.6);
-                padding: 20px;
-                border-radius: 8px;
-                text-align: center;
-                margin-bottom: 20px;'>
-        <h1 style='color: white; font-family: Arial, sans-serif; margin: 0;'>
-            EGS DATA CENTER
-        </h1>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# ----------------------------------------
 # DISABLE SSL WARNINGS FOR SELF-SIGNED CERT
 # ----------------------------------------
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ----------------------------------------
-# FETCH SENSOR DATA FROM YOUR API
+# FETCH SENSOR DATA FROM YOUR API (LIST FORMAT)
 # ----------------------------------------
 
 API_URL = "https://iot.egspgroup.in:81/api/dht"
@@ -63,8 +45,13 @@ try:
     response = requests.get(API_URL, timeout=5, verify=False)
     if response.status_code == 200:
         data = response.json()
-        temperature = data.get("temperature", "N/A")
-        humidity = data.get("humidity", "N/A")
+        if isinstance(data, list) and len(data) > 0:
+            temperature = data[0].get("temperature", "N/A")
+            humidity = data[0].get("humidity", "N/A")
+        else:
+            temperature = "N/A"
+            humidity = "N/A"
+            st.warning("API returned an empty list.")
     else:
         temperature = "N/A"
         humidity = "N/A"
