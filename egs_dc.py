@@ -173,7 +173,7 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CLEAN TREND CHARTS — MATCH YOUR STYLE
+# CLEAN TREND CHARTS — AXIS TITLES + TICKS = BLACK
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
@@ -208,8 +208,16 @@ fig_temp.update_layout(
     paper_bgcolor='#e6f7ff',
     font=dict(color='black', size=14),
     hovermode='x unified',
-    xaxis=dict(showgrid=True, gridwidth=1, gridcolor='lightgray'),
-    yaxis=dict(showgrid=True, gridwidth=1, gridcolor='lightgray'),
+    xaxis=dict(
+        title=dict(font=dict(color='black')),
+        tickfont=dict(color='black'),
+        showgrid=True, gridwidth=1, gridcolor='lightgray'
+    ),
+    yaxis=dict(
+        title=dict(font=dict(color='black')),
+        tickfont=dict(color='black'),
+        showgrid=True, gridwidth=1, gridcolor='lightgray'
+    )
 )
 st.plotly_chart(fig_temp, use_container_width=True)
 
@@ -241,7 +249,15 @@ fig_hum.update_layout(
     paper_bgcolor='#e6f7ff',
     font=dict(color='black', size=14),
     hovermode='x unified',
-    xaxis=dict(showgrid=True, gridwidth=1, gridcolor='lightgray'),
-    yaxis=dict(showgrid=True, gridwidth=1, gridcolor='lightgray'),
+    xaxis=dict(
+        title=dict(font=dict(color='black')),
+        tickfont=dict(color='black'),
+        showgrid=True, gridwidth=1, gridcolor='lightgray'
+    ),
+    yaxis=dict(
+        title=dict(font=dict(color='black')),
+        tickfont=dict(color='black'),
+        showgrid=True, gridwidth=1, gridcolor='lightgray'
+    )
 )
 st.plotly_chart(fig_hum, use_container_width=True)
