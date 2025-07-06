@@ -21,34 +21,13 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
-# CUSTOM BACKGROUND COLOR + STYLES
+# ALWAYS USE PLAIN BLACK BACKGROUND
 # ----------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: #121212;  /* <-- your custom background color */
-    }
-    .centered-title {
-        text-align: center;
-        color: white;
-        font-size: 48px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    div.stButton > button {
-        display: block;
-        margin: 0 auto;
-        background-color: #1E88E5;
-        color: white;
-        font-size: 20px;
-        padding: 0.75em 2em;
-        border-radius: 8px;
-        border: none;
-    }
-    div.stButton > button:hover {
-        background-color: #1565C0;
-        color: white;
+        background: #000000;  /* plain black */
     }
     </style>
     """,
@@ -56,21 +35,21 @@ st.markdown(
 )
 
 # ----------------------------------------
-# TITLE CENTERED
+# TITLE ALWAYS CENTERED
 # ----------------------------------------
 st.markdown(
     """
-    <h1 class='centered-title'>EGS DATA CENTER</h1>
+    <h1 style='text-align: center; color: white;'>
+        EGS DATA CENTER
+    </h1>
     """,
     unsafe_allow_html=True
 )
 
 # ----------------------------------------
-# CENTERED BUTTON BELOW TITLE
+# BUTTON
 # ----------------------------------------
-col_center = st.columns([1, 2, 1])
-with col_center[1]:
-    button_clicked = st.button("Get Data")
+button_clicked = st.button("🔄 Get Data")
 
 # ----------------------------------------
 # IF BUTTON CLICKED → LOAD DATA & SHOW STATUS + CHARTS
@@ -105,7 +84,7 @@ if button_clicked:
     # STATUS BOX
     st.markdown(
         """
-        <div style='background: rgba(255, 255, 255, 0.25);
+        <div style='background: rgba(255, 255, 255, 0.15);
                     color: white;
                     padding: 30px;
                     border-radius: 12px;
@@ -114,7 +93,7 @@ if button_clicked:
         unsafe_allow_html=True
     )
 
-    st.subheader("✅ Live Data")
+    st.subheader("✅ System Status")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
     st.write(f"Last updated: {now}")
@@ -124,7 +103,7 @@ if button_clicked:
     # READ LOGGED DATA
     df = pd.read_csv(DATA_FILE)
 
-    # SIDE-BY-SIDE CHARTS
+    # COLUMNS for side-by-side charts
     col1, col2 = st.columns(2)
 
     with col1:
@@ -135,20 +114,11 @@ if button_clicked:
             y=df['temperature'],
             mode='lines+markers',
             name='Temperature (°C)',
-            line=dict(color='red', width=4),
-            marker=dict(size=8)
+            line=dict(color='red', width=3)
         ))
         fig_temp.update_layout(
-            yaxis=dict(title='Temperature (°C)',
-                       titlefont=dict(size=18),
-                       tickfont=dict(size=16, color='white')),
-            xaxis=dict(
-                title='Timestamp',
-                titlefont=dict(size=18),
-                tickfont=dict(size=14, color='white'),
-                rangeslider=dict(visible=True)
-            ),
-            legend=dict(font=dict(size=14, color='white')),
+            yaxis=dict(title='Temperature (°C)'),
+            xaxis=dict(title='Timestamp'),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(color='white'),
@@ -165,20 +135,11 @@ if button_clicked:
             y=df['humidity'],
             mode='lines+markers',
             name='Humidity (%)',
-            line=dict(color='blue', width=4),
-            marker=dict(size=8)
+            line=dict(color='blue', width=3)
         ))
         fig_hum.update_layout(
-            yaxis=dict(title='Humidity (%)',
-                       titlefont=dict(size=18),
-                       tickfont=dict(size=16, color='white')),
-            xaxis=dict(
-                title='Timestamp',
-                titlefont=dict(size=18),
-                tickfont=dict(size=14, color='white'),
-                rangeslider=dict(visible=True)
-            ),
-            legend=dict(font=dict(size=14, color='white')),
+            yaxis=dict(title='Humidity (%)'),
+            xaxis=dict(title='Timestamp'),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(color='white'),
@@ -186,3 +147,6 @@ if button_clicked:
         )
         fig_hum.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_hum, use_container_width=True)
+
+else:
+    st.info("Click **Get Data** to show sensor data and trends.")
