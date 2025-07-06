@@ -1,8 +1,5 @@
 import streamlit as st
 import requests
-import pandas as pd
-import plotly.graph_objs as go
-import urllib3
 from datetime import datetime
 
 # ----------------------------------------
@@ -51,6 +48,27 @@ st.markdown(
 )
 
 # ----------------------------------------
+# FETCH SENSOR DATA FROM YOUR API
+# ----------------------------------------
+
+API_URL = "https://iot.egspgroup.in:81/api/dht"
+
+try:
+    response = requests.get(API_URL, timeout=5)
+    if response.status_code == 200:
+        data = response.json()
+        temperature = data.get("temperature", "N/A")
+        humidity = data.get("humidity", "N/A")
+    else:
+        temperature = "N/A"
+        humidity = "N/A"
+        st.error(f"API error: {response.status_code}")
+except Exception as e:
+    temperature = "N/A"
+    humidity = "N/A"
+    st.error(f"Error fetching data: {e}")
+
+# ----------------------------------------
 # SYSTEM STATUS WRAPPED IN DARK BOX
 # ----------------------------------------
 st.markdown(
@@ -64,11 +82,12 @@ st.markdown(
 )
 
 st.subheader("✅ System Status")
-st.write(f"**Temperature Status:** placeholder")
-st.write(f"**Humidity Status:** placeholder")
+st.write(f"**Temperature Status:** {temperature} °C")
+st.write(f"**Humidity Status:** {humidity} %")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# OTHER APP LOGIC GOES HERE
+# LAST UPDATED TIME
 # ----------------------------------------
+st.write(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
