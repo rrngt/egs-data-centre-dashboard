@@ -3,7 +3,8 @@ import requests
 import urllib3
 from datetime import datetime
 import plotly.graph_objs as go
-import numpy as np
+import pandas as pd
+import os
 
 # ----------------------------------------
 # CONFIG
@@ -12,9 +13,35 @@ st.set_page_config(page_title="EGS DATA CENTER", layout="wide")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ----------------------------------------
-# BACKGROUND IMAGE WITH DARK OVERLAY
+# CSV LOGGING SETUP
 # ----------------------------------------
-def add_bg_from_url(image_url):
+DATA_FILE = "data.csv"
+if not os.path.exists(DATA_FILE):
+    df_init = pd.DataFrame(columns=["timestamp", "temperature", "humidity"])
+    df_init.to_csv(DATA_FILE, index=False)
+
+# ----------------------------------------
+# BUTTON
+# ----------------------------------------
+button_clicked = st.button("🔄 Get Data")
+
+# ----------------------------------------
+# CONDITIONAL BACKGROUND OR PLAIN
+# ----------------------------------------
+if button_clicked:
+    # Plain background style
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background: #000000;  /* plain black */
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+else:
+    # Background image with overlay
     st.markdown(
         f"""
         <style>
@@ -23,7 +50,7 @@ def add_bg_from_url(image_url):
                 rgba(0, 0, 0, 0.6),
                 rgba(0, 0, 0, 0.6)
             ),
-            url("{image_url}");
+            url("https://raw.githubusercontent.com/rrngt/egs-data-centre-dashboard/main/egs_background.jpg");
             background-size: cover;
             background-position: center;
         }}
@@ -32,13 +59,22 @@ def add_bg_from_url(image_url):
         unsafe_allow_html=True
     )
 
-IMAGE_URL = "https://raw.githubusercontent.com/rrngt/egs-data-centre-dashboard/main/egs_background.jpg"
-add_bg_from_url(IMAGE_URL)
+# ----------------------------------------
+# TITLE ALWAYS CENTERED
+# ----------------------------------------
+st.markdown(
+    """
+    <h1 style='text-align: center; color: white;'>
+        EGS DATA CENTER
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
 
 # ----------------------------------------
-# BUTTON: GET DATA
+# IF BUTTON CLICKED → LOAD DATA & SHOW STATUS
 # ----------------------------------------
-if st.button("🔄 Get Data"):
+if button_clicked:
     API_URL = "https://iot.egspgroup.in:81/api/dht"
 
     try:
@@ -61,13 +97,18 @@ if st.button("🔄 Get Data"):
         humidity = "N/A"
         st.error(f"Error fetching data: {e}")
 
-    # WRAP EVERYTHING IN A CLEAR BOX
+    # Save to CSV
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    new_row = pd.DataFrame([[now, temperature, humidity]], columns=["timestamp", "temperature", "humidity"])
+    new_row.to_csv(DATA_FILE, mode='a', header=False, index=False)
+
+    # STATUS BOX
     st.markdown(
         """
-        <div style='background: rgba(0, 0, 0, 0.6);
+        <div style='background: rgba(255, 255, 255, 0.1);
                     padding: 30px;
                     border-radius: 12px;
-                    margin-bottom: 20px;'>
+                    margin-bottom: 20px; color: white;'>
         """,
         unsafe_allow_html=True
     )
@@ -75,47 +116,41 @@ if st.button("🔄 Get Data"):
     st.subheader("✅ System Status")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
-    st.write(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    st.write(f"Last updated: {now}")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # IMPRESSIVE ANIMATED TREND CHART
-    st.subheader("📈 Sensor Data Trend (Demo)")
+    # TREND CHART
+    st.subheader("📈 Sensor Data Trend")
 
-    # Example trend data for demonstration
-    x = np.arange(10)
-    y_temp = np.linspace(float(temperature) - 2, float(temperature), 10)
-    y_hum = np.linspace(float(humidity) - 2, float(humidity), 10)
-
+    df = pd.read_csv(DATA_FILE)
     fig = go.Figure()
-
     fig.add_trace(go.Scatter(
-        x=x,
-        y=y_temp,
+        x=df['timestamp'],
+        y=df['temperature'],
         mode='lines+markers',
         name='Temperature (°C)',
-        line=dict(color='red', width=3),
+        line=dict(color='red', width=3)
     ))
-
     fig.add_trace(go.Scatter(
-        x=x,
-        y=y_hum,
+        x=df['timestamp'],
+        y=df['humidity'],
         mode='lines+markers',
         name='Humidity (%)',
-        line=dict(color='blue', width=3),
+        line=dict(color='blue', width=3)
     ))
 
     fig.update_layout(
         yaxis=dict(title='Value'),
-        xaxis=dict(title='Time'),
+        xaxis=dict(title='Timestamp'),
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white')
+        font=dict(color='white'),
+        xaxis_tickangle=-45
     )
-
-    fig.update_traces(line=dict(shape='spline'))  # Smooth curve
+    fig.update_traces(line=dict(shape='spline'))
 
     st.plotly_chart(fig, use_container_width=True)
 
 else:
-    st.info("Click **Get Data** to fetch and display sensor data.")
+    st.info("Click **Get Data** to show sensor data and trends.")
