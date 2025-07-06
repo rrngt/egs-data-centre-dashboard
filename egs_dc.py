@@ -31,13 +31,13 @@ st.markdown(
 )
 
 # ----------------------------------------
-# PURE WHITE BACKGROUND FOR HIGH CONTRAST
+# LIGHT BLUE BACKGROUND
 # ----------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: #ffffff;
+        background: #e6f7ff;  /* Light blue */
     }
     </style>
     """,
@@ -196,8 +196,8 @@ fig_temp.add_trace(go.Scatter(
 fig_temp.update_layout(
     yaxis=dict(title='Temperature (°C)', color='black'),
     xaxis=dict(title='Timestamp', color='black'),
-    plot_bgcolor='white',
-    paper_bgcolor='white',
+    plot_bgcolor='#e6f7ff',
+    paper_bgcolor='#e6f7ff',
     font=dict(color='black', size=14),
     xaxis_tickangle=-45
 )
@@ -225,8 +225,8 @@ fig_hum.add_trace(go.Scatter(
 fig_hum.update_layout(
     yaxis=dict(title='Humidity (%)', color='black'),
     xaxis=dict(title='Timestamp', color='black'),
-    plot_bgcolor='white',
-    paper_bgcolor='white',
+    plot_bgcolor='#e6f7ff',
+    paper_bgcolor='#e6f7ff',
     font=dict(color='black', size=14),
     xaxis_tickangle=-45
 )
