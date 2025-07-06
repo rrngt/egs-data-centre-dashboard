@@ -2,3 +2,5 @@ streamlit
 requests
 pandas
 plotly
+urllib3
+
