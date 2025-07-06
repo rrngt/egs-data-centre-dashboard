@@ -92,7 +92,7 @@ try:
             df.drop_duplicates(subset=["timestamp"], inplace=True)
             df.to_csv(DATA_FILE, index=False)
 
-            st.success(f"✅ Fetched & inserted {len(rows_to_append)} records.")
+            # ✅ Fetched message REMOVED
         else:
             st.warning("API returned an empty list.")
     else:
