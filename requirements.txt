@@ -1,6 +1,8 @@
 streamlit
+plotly
 requests
 pandas
-plotly
 urllib3
+streamlit-autorefresh
+
 
