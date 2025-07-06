@@ -29,7 +29,6 @@ button_clicked = st.button("🔄 Get Data")
 # CONDITIONAL BACKGROUND OR PLAIN
 # ----------------------------------------
 if button_clicked:
-    # Plain black background after click
     st.markdown(
         f"""
         <style>
@@ -41,7 +40,6 @@ if button_clicked:
         unsafe_allow_html=True
     )
 else:
-    # Background image with overlay before click
     st.markdown(
         f"""
         <style>
@@ -72,7 +70,7 @@ st.markdown(
 )
 
 # ----------------------------------------
-# IF BUTTON CLICKED → LOAD DATA & SHOW STATUS
+# IF BUTTON CLICKED → LOAD DATA & SHOW STATUS + CHARTS
 # ----------------------------------------
 if button_clicked:
     API_URL = "https://iot.egspgroup.in:81/api/dht"
@@ -97,7 +95,6 @@ if button_clicked:
         humidity = "N/A"
         st.error(f"Error fetching data: {e}")
 
-    # Save to CSV
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     new_row = pd.DataFrame([[now, temperature, humidity]], columns=["timestamp", "temperature", "humidity"])
     new_row.to_csv(DATA_FILE, mode='a', header=False, index=False)
@@ -121,38 +118,53 @@ if button_clicked:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # TREND CHART
-    st.subheader("📈 Sensor Data Trend")
-
+    # READ LOGGED DATA
     df = pd.read_csv(DATA_FILE)
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=df['timestamp'],
-        y=df['temperature'],
-        mode='lines+markers',
-        name='Temperature (°C)',
-        line=dict(color='red', width=3)
-    ))
-    fig.add_trace(go.Scatter(
-        x=df['timestamp'],
-        y=df['humidity'],
-        mode='lines+markers',
-        name='Humidity (%)',
-        line=dict(color='blue', width=3)
-    ))
+    # COLUMNS for side-by-side charts
+    col1, col2 = st.columns(2)
 
-    fig.update_layout(
-        yaxis=dict(title='Value'),
-        xaxis=dict(title='Timestamp'),
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white'),
-        xaxis_tickangle=-45
-    )
-    fig.update_traces(line=dict(shape='spline'))
+    with col1:
+        st.subheader("🌡️ Temperature Trend")
+        fig_temp = go.Figure()
+        fig_temp.add_trace(go.Scatter(
+            x=df['timestamp'],
+            y=df['temperature'],
+            mode='lines+markers',
+            name='Temperature (°C)',
+            line=dict(color='red', width=3)
+        ))
+        fig_temp.update_layout(
+            yaxis=dict(title='Temperature (°C)'),
+            xaxis=dict(title='Timestamp'),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='white'),
+            xaxis_tickangle=-45
+        )
+        fig_temp.update_traces(line=dict(shape='spline'))
+        st.plotly_chart(fig_temp, use_container_width=True)
 
-    st.plotly_chart(fig, use_container_width=True)
+    with col2:
+        st.subheader("💧 Humidity Trend")
+        fig_hum = go.Figure()
+        fig_hum.add_trace(go.Scatter(
+            x=df['timestamp'],
+            y=df['humidity'],
+            mode='lines+markers',
+            name='Humidity (%)',
+            line=dict(color='blue', width=3)
+        ))
+        fig_hum.update_layout(
+            yaxis=dict(title='Humidity (%)'),
+            xaxis=dict(title='Timestamp'),
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='white'),
+            xaxis_tickangle=-45
+        )
+        fig_hum.update_traces(line=dict(shape='spline'))
+        st.plotly_chart(fig_hum, use_container_width=True)
 
 else:
     st.info("Click **Get Data** to show sensor data and trends.")
