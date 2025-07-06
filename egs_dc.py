@@ -29,7 +29,7 @@ button_clicked = st.button("🔄 Get Data")
 # CONDITIONAL BACKGROUND OR PLAIN
 # ----------------------------------------
 if button_clicked:
-    # Plain background style
+    # Plain black background after click
     st.markdown(
         f"""
         <style>
@@ -41,7 +41,7 @@ if button_clicked:
         unsafe_allow_html=True
     )
 else:
-    # Background image with overlay
+    # Background image with overlay before click
     st.markdown(
         f"""
         <style>
@@ -105,10 +105,11 @@ if button_clicked:
     # STATUS BOX
     st.markdown(
         """
-        <div style='background: rgba(255, 255, 255, 0.1);
+        <div style='background: rgba(255, 255, 255, 0.15);
+                    color: white;
                     padding: 30px;
                     border-radius: 12px;
-                    margin-bottom: 20px; color: white;'>
+                    margin-bottom: 20px;'>
         """,
         unsafe_allow_html=True
     )
@@ -124,6 +125,7 @@ if button_clicked:
     st.subheader("📈 Sensor Data Trend")
 
     df = pd.read_csv(DATA_FILE)
+
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=df['timestamp'],
