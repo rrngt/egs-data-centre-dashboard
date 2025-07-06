@@ -21,41 +21,18 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
-# BUTTON
+# ALWAYS USE PLAIN BLACK BACKGROUND
 # ----------------------------------------
-button_clicked = st.button("🔄 Get Data")
-
-# ----------------------------------------
-# CONDITIONAL BACKGROUND OR PLAIN
-# ----------------------------------------
-if button_clicked:
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background: #000000;  /* plain black */
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-else:
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background: linear-gradient(
-                rgba(0, 0, 0, 0.6),
-                rgba(0, 0, 0, 0.6)
-            ),
-            url("https://raw.githubusercontent.com/rrngt/egs-data-centre-dashboard/main/egs_background.jpg");
-            background-size: cover;
-            background-position: center;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: #000000;  /* plain black */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ----------------------------------------
 # TITLE ALWAYS CENTERED
@@ -68,6 +45,11 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+# ----------------------------------------
+# BUTTON
+# ----------------------------------------
+button_clicked = st.button("🔄 Get Data")
 
 # ----------------------------------------
 # IF BUTTON CLICKED → LOAD DATA & SHOW STATUS + CHARTS
