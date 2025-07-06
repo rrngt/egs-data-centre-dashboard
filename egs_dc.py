@@ -6,11 +6,22 @@ import plotly.graph_objs as go
 import pandas as pd
 import os
 
+from streamlit_autorefresh import st_autorefresh  # ✅ NEW
+
 # ----------------------------------------
 # CONFIG
 # ----------------------------------------
 st.set_page_config(page_title="EGS DATA CENTER", layout="wide")
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# ----------------------------------------
+# AUTO-REFRESH TOGGLE
+# ----------------------------------------
+st.sidebar.markdown("## Settings")
+enable_autorefresh = st.sidebar.checkbox("🔄 Enable Auto-Refresh (Every 1 min)", value=True)
+
+if enable_autorefresh:
+    count = st_autorefresh(interval=60 * 1000, limit=None, key="datarefresh")
 
 # ----------------------------------------
 # CSV LOGGING SETUP
