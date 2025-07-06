@@ -70,8 +70,8 @@ if button_clicked:
                     humidity = entry.get("humidity", "N/A")
                     timestamp = entry.get("timestamp")
                     
-                    # If your API has no timestamp, use current time for all
-                    if timestamp is None:
+                    # If your API has no timestamp, use current time for fallback
+                    if not timestamp or pd.isna(timestamp):
                         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     
                     rows_to_append.append([timestamp, temperature, humidity])
@@ -151,12 +151,14 @@ if button_clicked:
     )
 
     # ----------------------------------------
-    # PREPARE DATA FOR CHARTS
+    # PREPARE DATA FOR CHARTS — SAFE TIMESTAMP PARSING
     # ----------------------------------------
-    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
     df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
     df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
-    df = df.dropna(subset=['temperature', 'humidity'])
+
+    # Drop rows with invalid datetimes or NaN values
+    df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 
     # COLUMNS for side-by-side charts
     col1, col2 = st.columns(2)
@@ -203,5 +205,3 @@ if button_clicked:
         fig_hum.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_hum, use_container_width=True)
 
-else:
-    st.info("Click **Get Data** to show all sensor records, total count, download CSV, and trends.")
