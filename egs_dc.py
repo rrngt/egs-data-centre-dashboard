@@ -21,7 +21,7 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
-# ALWAYS USE PLAIN BLACK BACKGROUND
+# ALWAYS BLACK BACKGROUND + CUSTOM STYLES
 # ----------------------------------------
 st.markdown(
     """
@@ -29,27 +29,48 @@ st.markdown(
     .stApp {
         background: #000000;  /* plain black */
     }
+    .centered-title {
+        text-align: center;
+        color: white;
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    div.stButton > button {
+        display: block;
+        margin: 0 auto;
+        background-color: #1E88E5;
+        color: white;
+        font-size: 20px;
+        padding: 0.75em 2em;
+        border-radius: 8px;
+        border: none;
+    }
+    div.stButton > button:hover {
+        background-color: #1565C0;
+        color: white;
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
 # ----------------------------------------
-# TITLE ALWAYS CENTERED
+# TITLE CENTERED
 # ----------------------------------------
 st.markdown(
     """
-    <h1 style='text-align: center; color: white;'>
-        EGS DATA CENTER
-    </h1>
+    <h1 class='centered-title'>EGS DATA CENTER</h1>
     """,
     unsafe_allow_html=True
 )
 
 # ----------------------------------------
-# BUTTON
+# CENTERED BUTTON BELOW TITLE
 # ----------------------------------------
-button_clicked = st.button("🔄 Get Data")
+col_center = st.columns([1, 2, 1])
+with col_center[1]:
+    button_clicked = st.button("🔄 Get Data")
 
 # ----------------------------------------
 # IF BUTTON CLICKED → LOAD DATA & SHOW STATUS + CHARTS
@@ -103,7 +124,7 @@ if button_clicked:
     # READ LOGGED DATA
     df = pd.read_csv(DATA_FILE)
 
-    # COLUMNS for side-by-side charts
+    # SIDE-BY-SIDE CHARTS
     col1, col2 = st.columns(2)
 
     with col1:
