@@ -51,10 +51,10 @@ st.markdown(
 # ----------------------------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    button_clicked = st.button("Get Data")
+    button_clicked = st.button("🔄 Get Data")
 
 # ----------------------------------------
-# IF BUTTON CLICKED → FETCH DATA & SHOW STATUS + CHARTS
+# IF BUTTON CLICKED → FETCH ALL DATA & SAVE
 # ----------------------------------------
 if button_clicked:
     API_URL = "https://iot.egspgroup.in:81/api/dht"
@@ -64,26 +64,48 @@ if button_clicked:
         if response.status_code == 200:
             data = response.json()
             if isinstance(data, list) and len(data) > 0:
-                temperature = data[0].get("temperature", "N/A")
-                humidity = data[0].get("humidity", "N/A")
+                rows_to_append = []
+                for entry in data:
+                    temperature = entry.get("temperature", "N/A")
+                    humidity = entry.get("humidity", "N/A")
+                    timestamp = entry.get("timestamp")
+                    
+                    # If your API has no timestamp, use current time for all
+                    if timestamp is None:
+                        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    
+                    rows_to_append.append([timestamp, temperature, humidity])
+                
+                df_new = pd.DataFrame(rows_to_append, columns=["timestamp", "temperature", "humidity"])
+                df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
+                
+                # Remove duplicate timestamps
+                df = pd.read_csv(DATA_FILE)
+                df.drop_duplicates(subset=["timestamp"], inplace=True)
+                df.to_csv(DATA_FILE, index=False)
+
+                st.success(f"✅ Fetched & inserted {len(rows_to_append)} records.")
             else:
-                temperature = "N/A"
-                humidity = "N/A"
                 st.warning("API returned an empty list.")
         else:
-            temperature = "N/A"
-            humidity = "N/A"
             st.error(f"API error: {response.status_code}")
     except Exception as e:
-        temperature = "N/A"
-        humidity = "N/A"
         st.error(f"Error fetching data: {e}")
 
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    new_row = pd.DataFrame([[now, temperature, humidity]], columns=["timestamp", "temperature", "humidity"])
-    new_row.to_csv(DATA_FILE, mode='a', header=False, index=False)
+    # ----------------------------------------
+    # SYSTEM STATUS: show most recent record
+    # ----------------------------------------
+    df = pd.read_csv(DATA_FILE)
+    if len(df) > 0:
+        latest = df.iloc[-1]
+        temperature = latest["temperature"]
+        humidity = latest["humidity"]
+        now = latest["timestamp"]
+    else:
+        temperature = "N/A"
+        humidity = "N/A"
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    # STATUS BOX
     st.markdown(
         """
         <div style='background: rgba(0, 0, 0, 0.05);
@@ -103,9 +125,8 @@ if button_clicked:
     st.markdown("</div>", unsafe_allow_html=True)
 
     # ----------------------------------------
-    # SHOW TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
+    # TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
     # ----------------------------------------
-    df = pd.read_csv(DATA_FILE)
     total_records = len(df)
 
     st.markdown(
@@ -130,7 +151,7 @@ if button_clicked:
     )
 
     # ----------------------------------------
-    # READ LOGGED DATA FOR CHARTS
+    # PREPARE DATA FOR CHARTS
     # ----------------------------------------
     df['timestamp'] = pd.to_datetime(df['timestamp'])
     df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
@@ -182,3 +203,5 @@ if button_clicked:
         fig_hum.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_hum, use_container_width=True)
 
+else:
+    st.info("Click **Get Data** to show all sensor records, total count, download CSV, and trends.")
