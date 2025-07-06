@@ -35,16 +35,11 @@ st.markdown(
 )
 
 # ----------------------------------------
-# LOGO AT THE TOP CENTER (local file)
+# LOGO AT THE TOP CENTER — USE st.image!
 # ----------------------------------------
-st.markdown(
-    """
-    <div style='text-align: center;'>
-        <img src='logo.png' alt='EGS Logo' style='width: 150px;'>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+st.image("logo.png", width=150)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
 # BIG, BOLD, CENTERED TITLE
