@@ -21,13 +21,13 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
-# LIGHT BACKGROUND
+# PURE WHITE BACKGROUND FOR HIGH CONTRAST
 # ----------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: #f5f5f5;
+        background: #ffffff;  /* pure white */
     }
     </style>
     """,
@@ -38,7 +38,7 @@ st.markdown(
 # LOGO CENTERED AND BIGGER
 # ----------------------------------------
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-st.image("logo.png", width=250)  # ✅ Adjust size here (200–300 is good)
+st.image("logo.png", width=250)  # adjust size for mobile/desktop
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
@@ -46,7 +46,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ----------------------------------------
 st.markdown(
     """
-    <h1 style='text-align: center; color: #333333; font-size: 72px; font-weight: bold;'>
+    <h1 style='text-align: center; color: #000000; font-size: 64px; font-weight: bold;'>
         EGS DATA CENTER
     </h1>
     """,
@@ -107,10 +107,11 @@ else:
 st.markdown(
     """
     <div style='background: rgba(0, 0, 0, 0.05);
-                color: #333333;
+                color: #000000;
                 padding: 30px;
                 border-radius: 12px;
-                margin-bottom: 20px;'>
+                margin-bottom: 20px;
+                font-size: 18px;'>
     """,
     unsafe_allow_html=True
 )
@@ -130,10 +131,11 @@ total_records = len(df)
 st.markdown(
     f"""
     <div style='background: rgba(0, 0, 0, 0.05);
-                color: #333333;
+                color: #000000;
                 padding: 20px;
                 border-radius: 12px;
-                margin-bottom: 20px;'>
+                margin-bottom: 20px;
+                font-size: 18px;'>
         <h4>Total Records Inserted: {total_records}</h4>
     </div>
     """,
@@ -149,7 +151,7 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CHARTS — safe timestamp parsing
+# CHARTS — safe timestamp parsing & high-contrast
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
@@ -166,14 +168,14 @@ with col1:
         y=df['temperature'],
         mode='lines+markers',
         name='Temperature (°C)',
-        line=dict(color='red', width=3)
+        line=dict(color='red', width=4)  # ✅ thicker line for mobile
     ))
     fig_temp.update_layout(
-        yaxis=dict(title='Temperature (°C)'),
-        xaxis=dict(title='Timestamp'),
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#333333'),
+        yaxis=dict(title='Temperature (°C)', color='black'),
+        xaxis=dict(title='Timestamp', color='black'),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        font=dict(color='black'),
         xaxis_tickangle=-45
     )
     fig_temp.update_traces(line=dict(shape='spline'))
@@ -187,14 +189,14 @@ with col2:
         y=df['humidity'],
         mode='lines+markers',
         name='Humidity (%)',
-        line=dict(color='blue', width=3)
+        line=dict(color='blue', width=4)  # ✅ thicker line for mobile
     ))
     fig_hum.update_layout(
-        yaxis=dict(title='Humidity (%)'),
-        xaxis=dict(title='Timestamp'),
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#333333'),
+        yaxis=dict(title='Humidity (%)', color='black'),
+        xaxis=dict(title='Timestamp', color='black'),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        font=dict(color='black'),
         xaxis_tickangle=-45
     )
     fig_hum.update_traces(line=dict(shape='spline'))
