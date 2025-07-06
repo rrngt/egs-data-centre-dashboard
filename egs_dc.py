@@ -21,6 +21,16 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
+# RESPONSIVE META TAG FOR MOBILE
+# ----------------------------------------
+st.markdown(
+    """
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    """,
+    unsafe_allow_html=True
+)
+
+# ----------------------------------------
 # PURE WHITE BACKGROUND FOR HIGH CONTRAST
 # ----------------------------------------
 st.markdown(
@@ -158,53 +168,67 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CHARTS — safe timestamp parsing & high-contrast
+# CHARTS — stacked, high-contrast, mobile-friendly
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
 df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
 df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 
-col1, col2 = st.columns(2)
+# Temperature Trend chart
+st.markdown(
+    """
+    <h3 style='color: #000000; font-size: 24px;'>
+        🌡️ Temperature Trend
+    </h3>
+    """,
+    unsafe_allow_html=True
+)
 
-with col1:
-    st.subheader("🌡️ Temperature Trend")
-    fig_temp = go.Figure()
-    fig_temp.add_trace(go.Scatter(
-        x=df['timestamp'],
-        y=df['temperature'],
-        mode='lines+markers',
-        name='Temperature (°C)',
-        line=dict(color='red', width=4)
-    ))
-    fig_temp.update_layout(
-        yaxis=dict(title='Temperature (°C)', color='black'),
-        xaxis=dict(title='Timestamp', color='black'),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font=dict(color='black'),
-        xaxis_tickangle=-45
-    )
-    fig_temp.update_traces(line=dict(shape='spline'))
-    st.plotly_chart(fig_temp, use_container_width=True)
+fig_temp = go.Figure()
+fig_temp.add_trace(go.Scatter(
+    x=df['timestamp'],
+    y=df['temperature'],
+    mode='lines+markers',
+    name='Temperature (°C)',
+    line=dict(color='red', width=5)
+))
+fig_temp.update_layout(
+    yaxis=dict(title='Temperature (°C)', color='black'),
+    xaxis=dict(title='Timestamp', color='black'),
+    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='black', size=14),
+    xaxis_tickangle=-45
+)
+fig_temp.update_traces(line=dict(shape='spline'))
+st.plotly_chart(fig_temp, use_container_width=True)
 
-with col2:
-    st.subheader("💧 Humidity Trend")
-    fig_hum = go.Figure()
-    fig_hum.add_trace(go.Scatter(
-        x=df['timestamp'],
-        y=df['humidity'],
-        mode='lines+markers',
-        name='Humidity (%)',
-        line=dict(color='blue', width=4)
-    ))
-    fig_hum.update_layout(
-        yaxis=dict(title='Humidity (%)', color='black'),
-        xaxis=dict(title='Timestamp', color='black'),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font=dict(color='black'),
-        xaxis_tickangle=-45
-    )
-    fig_hum.update_traces(line=dict(shape='spline'))
-    st.plotly_chart(fig_hum, use_container_width=True)
+# Humidity Trend chart
+st.markdown(
+    """
+    <h3 style='color: #000000; font-size: 24px;'>
+        💧 Humidity Trend
+    </h3>
+    """,
+    unsafe_allow_html=True
+)
+
+fig_hum = go.Figure()
+fig_hum.add_trace(go.Scatter(
+    x=df['timestamp'],
+    y=df['humidity'],
+    mode='lines+markers',
+    name='Humidity (%)',
+    line=dict(color='blue', width=5)
+))
+fig_hum.update_layout(
+    yaxis=dict(title='Humidity (%)', color='black'),
+    xaxis=dict(title='Timestamp', color='black'),
+    plot_bgcolor='white',
+    paper_bgcolor='white',
+    font=dict(color='black', size=14),
+    xaxis_tickangle=-45
+)
+fig_hum.update_traces(line=dict(shape='spline'))
+st.plotly_chart(fig_hum, use_container_width=True)
