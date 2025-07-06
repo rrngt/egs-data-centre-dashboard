@@ -52,7 +52,7 @@ st.image("logo.png", width=250)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# BIG, BOLD, CENTERED TITLE
+# BIG, BOLD, CENTERED TITLE (NO ℹ️)
 # ----------------------------------------
 st.markdown(
     """
@@ -101,7 +101,7 @@ except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS: ✅ LIVE BLACK & BOLD, NO TIMESTAMP
+# SYSTEM STATUS: ✅ LIVE BLACK & BOLD, PURE HTML (NO ℹ️)
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
 if len(df) > 0:
@@ -146,7 +146,7 @@ st.markdown(
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
+# TOTAL RECORDS INSERTED + PASSWORD-PROTECTED DOWNLOAD
 # ----------------------------------------
 total_records = len(df)
 
@@ -164,16 +164,28 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# CSV bytes
 csv = df.to_csv(index=False).encode('utf-8')
-st.download_button(
-    label="📥 Download CSV",
-    data=csv,
-    file_name='data.csv',
-    mime='text/csv'
+
+# Password input
+password = st.text_input(
+    "Enter password to download CSV:",
+    type="password"
 )
 
+# Conditional download button
+if password == "YourSecretPassword":  # Replace with your actual password
+    st.download_button(
+        label="📥 Download CSV",
+        data=csv,
+        file_name='data.csv',
+        mime='text/csv'
+    )
+elif password != "":
+    st.error("Incorrect password. Please try again.")
+
 # ----------------------------------------
-# CLEAN TREND CHARTS — AXIS TITLES + TICKS = BLACK
+# CLEAN TREND CHARTS — TITLES/TICKS BLACK, PURE HTML TITLES (NO ℹ️)
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
