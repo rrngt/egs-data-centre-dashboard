@@ -35,10 +35,10 @@ st.markdown(
 )
 
 # ----------------------------------------
-# LOGO AT THE TOP CENTER — USE st.image!
+# LOGO CENTERED AND BIGGER
 # ----------------------------------------
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-st.image("logo.png", width=150)
+st.image("logo.png", width=250)  # ✅ Adjust size here (200–300 is good)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
