@@ -96,7 +96,7 @@ except Exception as e:
 df = pd.read_csv(DATA_FILE)
 df.drop_duplicates(subset=["timestamp"], inplace=True)
 df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
-df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+df['timestamp'] = pd.to_datetime(df['timestamp'], errors="coerce")
 df = df.dropna(subset=['timestamp'])
 df = df.sort_values(by='timestamp')
 df.to_csv(DATA_FILE, index=False)
@@ -281,3 +281,21 @@ with col2:
         unsafe_allow_html=True
     )
     st.plotly_chart(fig_hum, use_container_width=True)
+
+# ----------------------------------------
+# ✅ Display All Recorded Data
+# ----------------------------------------
+st.markdown(
+    """
+    <h3 style='color: #000000; font-size: 24px;'>
+        📋 All Recorded Data
+    </h3>
+    """,
+    unsafe_allow_html=True
+)
+
+st.dataframe(
+    df.reset_index(drop=True),
+    use_container_width=True,
+    height=400
+)
