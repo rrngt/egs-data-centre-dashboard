@@ -69,16 +69,16 @@ if button_clicked:
                     temperature = entry.get("temperature", "N/A")
                     humidity = entry.get("humidity", "N/A")
                     timestamp = entry.get("timestamp")
-                    
-                    # If your API has no timestamp, use current time for fallback
+
+                    # Fallback if missing timestamp
                     if not timestamp or pd.isna(timestamp):
                         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    
+
                     rows_to_append.append([timestamp, temperature, humidity])
-                
+
                 df_new = pd.DataFrame(rows_to_append, columns=["timestamp", "temperature", "humidity"])
                 df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
-                
+
                 # Remove duplicate timestamps
                 df = pd.read_csv(DATA_FILE)
                 df.drop_duplicates(subset=["timestamp"], inplace=True)
@@ -157,7 +157,6 @@ if button_clicked:
     df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
     df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
 
-    # Drop rows with invalid datetimes or NaN values
     df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 
     # COLUMNS for side-by-side charts
