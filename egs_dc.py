@@ -27,7 +27,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background: #f5f5f5;  /* light background */
+        background: #f5f5f5;
     }
     </style>
     """,
@@ -35,11 +35,26 @@ st.markdown(
 )
 
 # ----------------------------------------
-# BIG, BOLD, CENTERED TITLE — now clickable
+# LOGO AT THE TOP CENTER (from GitHub)
 # ----------------------------------------
 st.markdown(
     """
-    <h1 style='text-align: center; color: #333333; font-size: 72px; font-weight: bold; cursor: pointer;'>
+    <div style='text-align: center;'>
+        <img src='YOUR_GITHUB_RAW_LOGO_URL' alt='EGS Logo' style='width: 150px;'>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Example:
+# <img src='https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/PATH/logo.png' ...
+
+# ----------------------------------------
+# BIG, BOLD, CENTERED TITLE
+# ----------------------------------------
+st.markdown(
+    """
+    <h1 style='text-align: center; color: #333333; font-size: 72px; font-weight: bold;'>
         EGS DATA CENTER
     </h1>
     """,
@@ -47,7 +62,7 @@ st.markdown(
 )
 
 # ----------------------------------------
-# AUTOMATIC FETCH EVERY LOAD
+# AUTOMATIC FETCH EVERY PAGE LOAD
 # ----------------------------------------
 API_URL = "https://iot.egspgroup.in:81/api/dht"
 
@@ -70,7 +85,7 @@ try:
             df_new = pd.DataFrame(rows_to_append, columns=["timestamp", "temperature", "humidity"])
             df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
 
-            # Remove duplicates
+            # Remove duplicate timestamps
             df = pd.read_csv(DATA_FILE)
             df.drop_duplicates(subset=["timestamp"], inplace=True)
             df.to_csv(DATA_FILE, index=False)
@@ -84,7 +99,7 @@ except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS
+# SYSTEM STATUS: show latest record
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
 if len(df) > 0:
@@ -116,7 +131,7 @@ st.write(f"Last updated: {now}")
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# TOTAL RECORDS + DOWNLOAD
+# TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
 # ----------------------------------------
 total_records = len(df)
 
@@ -142,12 +157,11 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CHARTS
+# CHARTS — safe timestamp parsing
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
 df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
-
 df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 
 col1, col2 = st.columns(2)
