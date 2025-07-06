@@ -146,7 +146,7 @@ st.markdown(
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# TOTAL RECORDS INSERTED + PASSWORD-PROTECTED DOWNLOAD
+# TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
 # ----------------------------------------
 total_records = len(df)
 
@@ -164,25 +164,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# CSV bytes
 csv = df.to_csv(index=False).encode('utf-8')
-
-# Password input
-password = st.text_input(
-    "Enter password to download CSV:",
-    type="password"
+st.download_button(
+    label="📥 Download CSV",
+    data=csv,
+    file_name='data.csv',
+    mime='text/csv'
 )
-
-# Conditional download button
-if password == "YourSecretPassword":  # Replace with your actual password
-    st.download_button(
-        label="📥 Download CSV",
-        data=csv,
-        file_name='data.csv',
-        mime='text/csv'
-    )
-elif password != "":
-    st.error("Incorrect password. Please try again.")
 
 # ----------------------------------------
 # CLEAN TREND CHARTS — TITLES/TICKS BLACK, PURE HTML TITLES (NO ℹ️)
