@@ -21,7 +21,7 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
-# ALWAYS USE LIGHT BACKGROUND
+# LIGHT BACKGROUND
 # ----------------------------------------
 st.markdown(
     """
@@ -35,28 +35,28 @@ st.markdown(
 )
 
 # ----------------------------------------
-# BIGGER, CENTERED TITLE
+# TITLE + BUTTON STACKED IN FORM
 # ----------------------------------------
-st.markdown(
-    """
-    <h1 style='text-align: center; color: #333333; font-size: 60px;'>
-        EGS DATA CENTER
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
+with st.form(key="get_data_form"):
+    st.markdown(
+        """
+        <div style='text-align: center;'>
+            <h1 style='color: #333333; font-size: 60px;'>
+                EGS DATA CENTER
+            </h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    submitted = st.form_submit_button(
+        "🔄 Get Data",
+        help="Fetch the latest sensor data"
+    )
 
 # ----------------------------------------
-# CENTERED BUTTON
+# IF BUTTON CLICKED → FETCH DATA & SHOW STATUS + CHARTS
 # ----------------------------------------
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    button_clicked = st.button("🔄 Get Data")
-
-# ----------------------------------------
-# IF BUTTON CLICKED → LOAD DATA & SHOW STATUS + CHARTS
-# ----------------------------------------
-if button_clicked:
+if submitted:
     API_URL = "https://iot.egspgroup.in:81/api/dht"
 
     try:
@@ -95,7 +95,7 @@ if button_clicked:
         unsafe_allow_html=True
     )
 
-    st.subheader("✅ System Status")
+    st.subheader("✅Live Data")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
     st.write(f"Last updated: {now}")
@@ -153,6 +153,3 @@ if button_clicked:
         )
         fig_hum.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_hum, use_container_width=True)
-
-else:
-    st.info("Click **Get Data** to show sensor data and trends.")
