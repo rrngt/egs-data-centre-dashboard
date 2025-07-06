@@ -21,13 +21,13 @@ if not os.path.exists(DATA_FILE):
     df_init.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
-# ALWAYS USE PLAIN BLACK BACKGROUND
+# ALWAYS USE LIGHT BACKGROUND
 # ----------------------------------------
 st.markdown(
     """
     <style>
     .stApp {
-        background: #000000;  /* plain black */
+        background: #f5f5f5;  /* light background */
     }
     </style>
     """,
@@ -35,11 +35,11 @@ st.markdown(
 )
 
 # ----------------------------------------
-# TITLE ALWAYS CENTERED
+# BIGGER, CENTERED TITLE
 # ----------------------------------------
 st.markdown(
     """
-    <h1 style='text-align: center; color: white;'>
+    <h1 style='text-align: center; color: #333333; font-size: 60px;'>
         EGS DATA CENTER
     </h1>
     """,
@@ -47,9 +47,11 @@ st.markdown(
 )
 
 # ----------------------------------------
-# BUTTON
+# CENTERED BUTTON
 # ----------------------------------------
-button_clicked = st.button("🔄 Get Data")
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    button_clicked = st.button("🔄 Get Data")
 
 # ----------------------------------------
 # IF BUTTON CLICKED → LOAD DATA & SHOW STATUS + CHARTS
@@ -84,8 +86,8 @@ if button_clicked:
     # STATUS BOX
     st.markdown(
         """
-        <div style='background: rgba(255, 255, 255, 0.15);
-                    color: white;
+        <div style='background: rgba(0, 0, 0, 0.05);
+                    color: #333333;
                     padding: 30px;
                     border-radius: 12px;
                     margin-bottom: 20px;'>
@@ -102,6 +104,10 @@ if button_clicked:
 
     # READ LOGGED DATA
     df = pd.read_csv(DATA_FILE)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
+    df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
+    df = df.dropna(subset=['temperature', 'humidity'])
 
     # COLUMNS for side-by-side charts
     col1, col2 = st.columns(2)
@@ -121,7 +127,7 @@ if button_clicked:
             xaxis=dict(title='Timestamp'),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
+            font=dict(color='#333333'),
             xaxis_tickangle=-45
         )
         fig_temp.update_traces(line=dict(shape='spline'))
@@ -142,7 +148,7 @@ if button_clicked:
             xaxis=dict(title='Timestamp'),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='white'),
+            font=dict(color='#333333'),
             xaxis_tickangle=-45
         )
         fig_hum.update_traces(line=dict(shape='spline'))
