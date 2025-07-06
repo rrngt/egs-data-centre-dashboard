@@ -27,7 +27,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background: #ffffff;  /* pure white */
+        background: #ffffff;
     }
     </style>
     """,
@@ -38,7 +38,7 @@ st.markdown(
 # LOGO CENTERED AND BIGGER
 # ----------------------------------------
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-st.image("logo.png", width=250)  # adjust size for mobile/desktop
+st.image("logo.png", width=250)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
@@ -91,7 +91,7 @@ except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS: show latest record
+# SYSTEM STATUS: show latest record (MOBILE FRIENDLY)
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
 if len(df) > 0:
@@ -117,9 +117,16 @@ st.markdown(
 )
 
 st.subheader("✅ LIVE")
-st.write(f"**Temperature Status:** {temperature} °C")
-st.write(f"**Humidity Status:** {humidity} %")
-st.write(f"Last updated: {now}")
+st.markdown(
+    f"""
+    <p style='font-size: 20px;'>
+        <b>Temperature:</b> {temperature} °C<br>
+        <b>Humidity:</b> {humidity} %<br>
+        <b>Last Updated:</b> {now}
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -168,7 +175,7 @@ with col1:
         y=df['temperature'],
         mode='lines+markers',
         name='Temperature (°C)',
-        line=dict(color='red', width=4)  # ✅ thicker line for mobile
+        line=dict(color='red', width=4)
     ))
     fig_temp.update_layout(
         yaxis=dict(title='Temperature (°C)', color='black'),
@@ -189,7 +196,7 @@ with col2:
         y=df['humidity'],
         mode='lines+markers',
         name='Humidity (%)',
-        line=dict(color='blue', width=4)  # ✅ thicker line for mobile
+        line=dict(color='blue', width=4)
     ))
     fig_hum.update_layout(
         yaxis=dict(title='Humidity (%)', color='black'),
