@@ -3,6 +3,7 @@ import requests
 import urllib3
 from datetime import datetime
 import plotly.graph_objs as go
+import numpy as np
 
 # ----------------------------------------
 # CONFIG
@@ -56,13 +57,13 @@ if st.button("🔄 Get Data"):
         humidity = "N/A"
         st.error(f"Error fetching data: {e}")
 
-    # SYSTEM STATUS
+    # WRAP EVERYTHING IN A CLEAR BOX
     st.markdown(
         """
-        <div style='background: rgba(0, 0, 0, 0.5);
-                    padding: 20px;
-                    border-radius: 8px;
-                    display: inline-block;'>
+        <div style='background: rgba(0, 0, 0, 0.6);
+                    padding: 30px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;'>
         """,
         unsafe_allow_html=True
     )
@@ -74,22 +75,43 @@ if st.button("🔄 Get Data"):
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # CHART
-    st.subheader("📈 Sensor Data Chart")
+    # IMPRESSIVE ANIMATED TREND CHART
+    st.subheader("📈 Sensor Data Trend (Demo)")
+
+    # Example trend data
+    x = np.arange(10)
+    y_temp = np.linspace(temperature - 2, temperature, 10)
+    y_hum = np.linspace(humidity - 2, humidity, 10)
+
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=["Temperature", "Humidity"],
-        y=[temperature, humidity],
-        text=[f"{temperature} °C", f"{humidity} %"],
-        textposition='auto'
+
+    fig.add_trace(go.Scatter(
+        x=x,
+        y=y_temp,
+        mode='lines+markers',
+        name='Temperature (°C)',
+        line=dict(color='red', width=3),
     ))
+
+    fig.add_trace(go.Scatter(
+        x=x,
+        y=y_hum,
+        mode='lines+markers',
+        name='Humidity (%)',
+        line=dict(color='blue', width=3),
+    ))
+
     fig.update_layout(
         yaxis=dict(title='Value'),
-        xaxis=dict(title='Parameter'),
+        xaxis=dict(title='Time'),
         plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
     )
+
+    # Smooth animation
+    fig.update_traces(line=dict(shape='spline'))
+
     st.plotly_chart(fig, use_container_width=True)
 
 else:
     st.info("Click **Get Data** to fetch and display sensor data.")
-
