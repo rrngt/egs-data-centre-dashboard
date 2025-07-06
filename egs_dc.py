@@ -114,7 +114,7 @@ if button_clicked:
         unsafe_allow_html=True
     )
 
-    st.subheader("✅ System Status")
+    st.subheader("Live Data")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
     st.write(f"Last updated: {now}")
@@ -169,5 +169,3 @@ if button_clicked:
         fig_hum.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_hum, use_container_width=True)
 
-else:
-    st.info("Click **Get Data** to show sensor data and trends.")
