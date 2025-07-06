@@ -101,7 +101,7 @@ except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS: show latest record (MOBILE FRIENDLY)
+# SYSTEM STATUS: show latest record (MOBILE FRIENDLY, BOLD, BLACK)
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
 if len(df) > 0:
@@ -129,10 +129,10 @@ st.markdown(
 st.subheader("✅ LIVE")
 st.markdown(
     f"""
-    <p style='font-size: 20px;'>
-        <b>Temperature:</b> {temperature} °C<br>
-        <b>Humidity:</b> {humidity} %<br>
-        <b>Last Updated:</b> {now}
+    <p style='font-size: 20px; color: #000000;'>
+        <span style='font-weight: bold;'>Temperature:</span> {temperature} °C<br>
+        <span style='font-weight: bold;'>Humidity:</span> {humidity} %<br>
+        <span style='font-weight: bold;'>Last Updated:</span> {now}
     </p>
     """,
     unsafe_allow_html=True
