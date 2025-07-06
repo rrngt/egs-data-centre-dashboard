@@ -27,7 +27,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background: #000000;  /* plain black */
+        background: #000000;
     }
     .centered-title {
         text-align: center;
@@ -114,7 +114,7 @@ if button_clicked:
         unsafe_allow_html=True
     )
 
-    st.subheader("Live Data")
+    st.subheader("✅ Live Data")
     st.write(f"**Temperature Status:** {temperature} °C")
     st.write(f"**Humidity Status:** {humidity} %")
     st.write(f"Last updated: {now}")
@@ -127,6 +127,7 @@ if button_clicked:
     # SIDE-BY-SIDE CHARTS
     col1, col2 = st.columns(2)
 
+    # --------------- TEMPERATURE CHART ----------------
     with col1:
         st.subheader("🌡️ Temperature Trend")
         fig_temp = go.Figure()
@@ -135,11 +136,27 @@ if button_clicked:
             y=df['temperature'],
             mode='lines+markers',
             name='Temperature (°C)',
-            line=dict(color='red', width=3)
+            line=dict(color='red', width=4),
+            marker=dict(size=8)
         ))
         fig_temp.update_layout(
-            yaxis=dict(title='Temperature (°C)'),
-            xaxis=dict(title='Timestamp'),
+            yaxis=dict(title='Temperature (°C)',
+                       titlefont=dict(size=18),
+                       tickfont=dict(size=16, color='white')),
+            xaxis=dict(
+                title='Timestamp',
+                titlefont=dict(size=18),
+                tickfont=dict(size=14, color='white'),
+                rangeslider=dict(visible=True),
+                rangeselector=dict(
+                    buttons=list([
+                        dict(count=5, label="5m", step="minute", stepmode="backward"),
+                        dict(count=15, label="15m", step="minute", stepmode="backward"),
+                        dict(step="all")
+                    ])
+                )
+            ),
+            legend=dict(font=dict(size=14, color='white')),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(color='white'),
@@ -148,6 +165,7 @@ if button_clicked:
         fig_temp.update_traces(line=dict(shape='spline'))
         st.plotly_chart(fig_temp, use_container_width=True)
 
+    # --------------- HUMIDITY CHART ----------------
     with col2:
         st.subheader("💧 Humidity Trend")
         fig_hum = go.Figure()
@@ -156,11 +174,27 @@ if button_clicked:
             y=df['humidity'],
             mode='lines+markers',
             name='Humidity (%)',
-            line=dict(color='blue', width=3)
+            line=dict(color='blue', width=4),
+            marker=dict(size=8)
         ))
         fig_hum.update_layout(
-            yaxis=dict(title='Humidity (%)'),
-            xaxis=dict(title='Timestamp'),
+            yaxis=dict(title='Humidity (%)',
+                       titlefont=dict(size=18),
+                       tickfont=dict(size=16, color='white')),
+            xaxis=dict(
+                title='Timestamp',
+                titlefont=dict(size=18),
+                tickfont=dict(size=14, color='white'),
+                rangeslider=dict(visible=True),
+                rangeselector=dict(
+                    buttons=list([
+                        dict(count=5, label="5m", step="minute", stepmode="backward"),
+                        dict(count=15, label="15m", step="minute", stepmode="backward"),
+                        dict(step="all")
+                    ])
+                )
+            ),
+            legend=dict(font=dict(size=14, color='white')),
             plot_bgcolor='rgba(0,0,0,0)',
             paper_bgcolor='rgba(0,0,0,0)',
             font=dict(color='white'),
