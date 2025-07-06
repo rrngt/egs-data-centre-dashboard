@@ -197,25 +197,15 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CLEAN TREND CHARTS — TITLES/TICKS BLACK, PURE HTML TITLES (NO ℹ️)
+# CLEAN TREND CHARTS — SIDE BY SIDE (6 cols each)
 # ----------------------------------------
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
 df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
 df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 
-# Temperature Trend chart
-st.markdown(
-    """
-    <h3 style='color: #000000; font-size: 24px;'>
-        🌡️ Temperature Trend
-    </h3>
-    """,
-    unsafe_allow_html=True
-)
-
+# Create Temperature Trend figure
 fig_temp = go.Figure()
-
 fig_temp.add_trace(go.Scatter(
     x=df['timestamp'],
     y=df['temperature'],
@@ -224,7 +214,6 @@ fig_temp.add_trace(go.Scatter(
     marker=dict(size=6),
     name='Temperature'
 ))
-
 fig_temp.update_layout(
     xaxis_title='Timestamp',
     yaxis_title='Temperature (°C)',
@@ -243,20 +232,9 @@ fig_temp.update_layout(
         showgrid=True, gridwidth=1, gridcolor='lightgray'
     )
 )
-st.plotly_chart(fig_temp, use_container_width=True)
 
-# Humidity Trend chart
-st.markdown(
-    """
-    <h3 style='color: #000000; font-size: 24px;'>
-        💧 Humidity Trend
-    </h3>
-    """,
-    unsafe_allow_html=True
-)
-
+# Create Humidity Trend figure
 fig_hum = go.Figure()
-
 fig_hum.add_trace(go.Scatter(
     x=df['timestamp'],
     y=df['humidity'],
@@ -265,7 +243,6 @@ fig_hum.add_trace(go.Scatter(
     marker=dict(size=6),
     name='Humidity'
 ))
-
 fig_hum.update_layout(
     xaxis_title='Timestamp',
     yaxis_title='Humidity (%)',
@@ -284,4 +261,28 @@ fig_hum.update_layout(
         showgrid=True, gridwidth=1, gridcolor='lightgray'
     )
 )
-st.plotly_chart(fig_hum, use_container_width=True)
+
+# Display charts side by side
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown(
+        """
+        <h3 style='color: #000000; font-size: 24px;'>
+            🌡️ Temperature Trend
+        </h3>
+        """,
+        unsafe_allow_html=True
+    )
+    st.plotly_chart(fig_temp, use_container_width=True)
+
+with col2:
+    st.markdown(
+        """
+        <h3 style='color: #000000; font-size: 24px;'>
+            💧 Humidity Trend
+        </h3>
+        """,
+        unsafe_allow_html=True
+    )
+    st.plotly_chart(fig_hum, use_container_width=True)
