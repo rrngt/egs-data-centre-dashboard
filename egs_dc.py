@@ -64,16 +64,16 @@ st.markdown(
 )
 
 # ----------------------------------------
-# AUTOMATIC FETCH EVERY PAGE LOAD
+# FETCH FULL API & OVERWRITE data.csv
 # ----------------------------------------
 API_URL = "https://iot.egspgroup.in:81/api/dht"
 
 try:
-    response = requests.get(API_URL, timeout=5, verify=False)
+    response = requests.get(API_URL, timeout=10, verify=False)
     if response.status_code == 200:
         data = response.json()
         if isinstance(data, list) and len(data) > 0:
-            rows_to_append = []
+            rows = []
             for entry in data:
                 temperature = entry.get("temperature", "N/A")
                 humidity = entry.get("humidity", "N/A")
@@ -82,24 +82,32 @@ try:
                 if not timestamp or pd.isna(timestamp):
                     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                rows_to_append.append([timestamp, temperature, humidity])
+                rows.append([timestamp, temperature, humidity])
 
-            df_new = pd.DataFrame(rows_to_append, columns=["timestamp", "temperature", "humidity"])
-            df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
+            df = pd.DataFrame(rows, columns=["timestamp", "temperature", "humidity"])
 
+            # ✅ Clean, deduplicate, sort
+            df.drop_duplicates(subset=["timestamp"], inplace=True)
+            df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'], errors="coerce")
+            df = df.dropna(subset=['timestamp'])
+            df = df.sort_values(by='timestamp')
+
+            # ✅ Save FULL cleaned data back to CSV
+            df.to_csv(DATA_FILE, index=False)
+
+        else:
+            st.warning("API returned an empty list.")
+    else:
+        st.error(f"API error: {response.status_code}")
 except Exception as e:
     st.error(f"Error fetching data: {e}")
 
-# ----------------------------------------
-# LOAD, CLEAN, DE-DUPLICATE DATA
-# ----------------------------------------
+# ✅ Reload CSV for charts, LIVE, and table
 df = pd.read_csv(DATA_FILE)
-df.drop_duplicates(subset=["timestamp"], inplace=True)
-df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors="coerce")
 df = df.dropna(subset=['timestamp'])
 df = df.sort_values(by='timestamp')
-df.to_csv(DATA_FILE, index=False)
 
 # ----------------------------------------
 # SYSTEM STATUS: ✅ LIVE CENTER-ALIGNED + PULSE ANIMATION
