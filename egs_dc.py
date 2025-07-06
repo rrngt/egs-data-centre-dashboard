@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import urllib3
 from datetime import datetime
 
 # ----------------------------------------
@@ -48,13 +49,18 @@ st.markdown(
 )
 
 # ----------------------------------------
+# DISABLE SSL WARNINGS FOR SELF-SIGNED CERT
+# ----------------------------------------
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# ----------------------------------------
 # FETCH SENSOR DATA FROM YOUR API
 # ----------------------------------------
 
 API_URL = "https://iot.egspgroup.in:81/api/dht"
 
 try:
-    response = requests.get(API_URL, timeout=5)
+    response = requests.get(API_URL, timeout=5, verify=False)
     if response.status_code == 200:
         data = response.json()
         temperature = data.get("temperature", "N/A")
