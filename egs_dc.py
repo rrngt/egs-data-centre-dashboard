@@ -87,23 +87,23 @@ try:
             df_new = pd.DataFrame(rows_to_append, columns=["timestamp", "temperature", "humidity"])
             df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
 
-            # Remove duplicate timestamps to avoid repeated records
-            df = pd.read_csv(DATA_FILE)
-            df.drop_duplicates(subset=["timestamp"], inplace=True)
-            df.to_csv(DATA_FILE, index=False)
-
-            # ✅ No success message shown — silent fetch
-        else:
-            st.warning("API returned an empty list.")
-    else:
-        st.error(f"API error: {response.status_code}")
 except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS: ✅ LIVE CENTER-ALIGNED + PULSE ANIMATION
+# LOAD, CLEAN, DE-DUPLICATE DATA
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
+df.drop_duplicates(subset=["timestamp"], inplace=True)
+df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
+df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+df = df.dropna(subset=['timestamp'])
+df = df.sort_values(by='timestamp')
+df.to_csv(DATA_FILE, index=False)
+
+# ----------------------------------------
+# SYSTEM STATUS: ✅ LIVE CENTER-ALIGNED + PULSE ANIMATION
+# ----------------------------------------
 if len(df) > 0:
     latest = df.iloc[-1]
     temperature = latest["temperature"]
@@ -167,7 +167,7 @@ st.markdown(
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# TOTAL RECORDS INSERTED + DOWNLOAD BUTTON (NO PASSWORD)
+# TOTAL RECORDS INSERTED + DOWNLOAD BUTTON
 # ----------------------------------------
 total_records = len(df)
 
@@ -188,7 +188,7 @@ st.markdown(
 # CSV bytes
 csv = df.to_csv(index=False).encode('utf-8')
 
-# Simple download button — open to all
+# Download button
 st.download_button(
     label="📥 Download CSV",
     data=csv,
@@ -197,23 +197,8 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CLEAN TREND CHARTS — LOAD ALL DATA & SHOW SIDE BY SIDE
+# TREND CHARTS — LIVE
 # ----------------------------------------
-
-# ✅ Load ALL rows from data.csv
-df = pd.read_csv(DATA_FILE)
-
-# ✅ Convert columns safely
-df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
-df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
-
-# ✅ Drop bad rows only
-df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
-
-# ✅ Now df contains ALL valid rows for plotting
-# This means the charts will always display ALL available data.
-
 # Temperature Trend chart
 fig_temp = go.Figure()
 fig_temp.add_trace(go.Scatter(
