@@ -21,6 +21,7 @@ def add_bg_from_url(image_url):
         .stApp {{
             background-image: url("{image_url}");
             background-size: cover;
+            background-position: center;
         }}
         </style>
         """,
@@ -32,7 +33,7 @@ IMAGE_URL = "https://raw.githubusercontent.com/rrngt/egs-data-centre-dashboard/m
 add_bg_from_url(IMAGE_URL)
 
 # ----------------------------------------
-# TITLE
+# TITLE WITH OVERLAY
 # ----------------------------------------
 st.markdown(
     """
@@ -50,10 +51,24 @@ st.markdown(
 )
 
 # ----------------------------------------
-# YOUR REMAINING APP LOGIC GOES HERE
+# SYSTEM STATUS WRAPPED IN DARK BOX
 # ----------------------------------------
-# Example placeholder:
-st.write("---")
+st.markdown(
+    """
+    <div style='background: rgba(0, 0, 0, 0.5);
+                padding: 20px;
+                border-radius: 8px;
+                display: inline-block;'>
+    """,
+    unsafe_allow_html=True
+)
+
 st.subheader("✅ System Status")
 st.write(f"**Temperature Status:** placeholder")
 st.write(f"**Humidity Status:** placeholder")
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# ----------------------------------------
+# OTHER APP LOGIC GOES HERE
+# ----------------------------------------
