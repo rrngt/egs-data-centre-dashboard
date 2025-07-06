@@ -87,12 +87,12 @@ try:
             df_new = pd.DataFrame(rows_to_append, columns=["timestamp", "temperature", "humidity"])
             df_new.to_csv(DATA_FILE, mode='a', header=False, index=False)
 
-            # Remove duplicate timestamps
+            # Remove duplicate timestamps to avoid repeated records
             df = pd.read_csv(DATA_FILE)
             df.drop_duplicates(subset=["timestamp"], inplace=True)
             df.to_csv(DATA_FILE, index=False)
 
-            # ✅ Fetched message REMOVED
+            # ✅ No success message shown — silent fetch
         else:
             st.warning("API returned an empty list.")
     else:
@@ -197,14 +197,24 @@ st.download_button(
 )
 
 # ----------------------------------------
-# CLEAN TREND CHARTS — SIDE BY SIDE (6 cols each)
+# CLEAN TREND CHARTS — LOAD ALL DATA & SHOW SIDE BY SIDE
 # ----------------------------------------
+
+# ✅ Load ALL rows from data.csv
+df = pd.read_csv(DATA_FILE)
+
+# ✅ Convert columns safely
 df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 df['temperature'] = pd.to_numeric(df['temperature'], errors='coerce')
 df['humidity'] = pd.to_numeric(df['humidity'], errors='coerce')
+
+# ✅ Drop bad rows only
 df = df.dropna(subset=['timestamp', 'temperature', 'humidity'])
 
-# Create Temperature Trend figure
+# ✅ Now df contains ALL valid rows for plotting
+# This means the charts will always display ALL available data.
+
+# Temperature Trend chart
 fig_temp = go.Figure()
 fig_temp.add_trace(go.Scatter(
     x=df['timestamp'],
@@ -233,7 +243,7 @@ fig_temp.update_layout(
     )
 )
 
-# Create Humidity Trend figure
+# Humidity Trend chart
 fig_hum = go.Figure()
 fig_hum.add_trace(go.Scatter(
     x=df['timestamp'],
@@ -262,7 +272,7 @@ fig_hum.update_layout(
     )
 )
 
-# Display charts side by side
+# ✅ Display both charts side by side
 col1, col2 = st.columns(2)
 
 with col1:
