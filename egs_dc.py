@@ -101,7 +101,7 @@ except Exception as e:
     st.error(f"Error fetching data: {e}")
 
 # ----------------------------------------
-# SYSTEM STATUS: ✅ LIVE CENTER-ALIGNED, NO TIMESTAMP
+# SYSTEM STATUS: ✅ LIVE CENTER-ALIGNED + PULSE ANIMATION
 # ----------------------------------------
 df = pd.read_csv(DATA_FILE)
 if len(df) > 0:
@@ -112,6 +112,24 @@ else:
     temperature = "N/A"
     humidity = "N/A"
 
+# Add the pulse animation style once
+st.markdown(
+    """
+    <style>
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Container with center alignment
 st.markdown(
     """
     <div style='background: rgba(0, 0, 0, 0.05);
@@ -120,11 +138,12 @@ st.markdown(
                 border-radius: 12px;
                 margin-bottom: 20px;
                 font-size: 18px;
-                text-align: center;'>  <!-- ✅ center everything -->
+                text-align: center;'>
     """,
     unsafe_allow_html=True
 )
 
+# LIVE header
 st.markdown(
     """
     <h2 style='color: #000000; font-weight: bold; text-align: center;'>
@@ -134,10 +153,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Animated text
 st.markdown(
     f"""
-    <p style='font-size: 20px; color: #000000; text-align: center;'>
-        <span style='font-weight: bold;'>Temperature:</span> {temperature} °C<br>
+    <p class='pulse' style='font-size: 20px; color: #000000; text-align: center;'>
+        <span style='font-weight: bold;'>Temperature:</span> {temperature} °C &nbsp;&nbsp;
         <span style='font-weight: bold;'>Humidity:</span> {humidity} %
     </p>
     """,
@@ -147,7 +167,7 @@ st.markdown(
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------------------------------------
-# TOTAL RECORDS INSERTED + PASSWORD-PROTECTED DOWNLOAD
+# TOTAL RECORDS INSERTED + DOWNLOAD BUTTON (NO PASSWORD)
 # ----------------------------------------
 total_records = len(df)
 
@@ -168,22 +188,13 @@ st.markdown(
 # CSV bytes
 csv = df.to_csv(index=False).encode('utf-8')
 
-# Password input
-password = st.text_input(
-    "Enter password to download CSV:",
-    type="password"
+# Simple download button — open to all
+st.download_button(
+    label="📥 Download CSV",
+    data=csv,
+    file_name='data.csv',
+    mime='text/csv'
 )
-
-# Conditional download button
-if password == "Ramanan":  # Replace with your actual password
-    st.download_button(
-        label="📥 Download CSV",
-        data=csv,
-        file_name='data.csv',
-        mime='text/csv'
-    )
-elif password != "":
-    st.error("Incorrect password. Please try again.")
 
 # ----------------------------------------
 # CLEAN TREND CHARTS — TITLES/TICKS BLACK, PURE HTML TITLES (NO ℹ️)
