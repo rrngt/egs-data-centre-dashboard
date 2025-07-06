@@ -35,19 +35,16 @@ st.markdown(
 )
 
 # ----------------------------------------
-# LOGO AT THE TOP CENTER (from GitHub)
+# LOGO AT THE TOP CENTER (local file)
 # ----------------------------------------
 st.markdown(
     """
     <div style='text-align: center;'>
-        <img src='YOUR_GITHUB_RAW_LOGO_URL' alt='EGS Logo' style='width: 150px;'>
+        <img src='logo.png' alt='EGS Logo' style='width: 150px;'>
     </div>
     """,
     unsafe_allow_html=True
 )
-
-# Example:
-# <img src='https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/PATH/logo.png' ...
 
 # ----------------------------------------
 # BIG, BOLD, CENTERED TITLE
